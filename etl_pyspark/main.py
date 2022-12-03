@@ -8,13 +8,16 @@ import re
 
 def start_or_create_spark():
     from pyspark.sql import SparkSession
-    spark = (SparkSession
-             .builder
-             .appName("Processamento de Dados de Gasolina no Brasil")
-             .config('spark.jars', 'gs://spark-lib/bigquery/spark-bigquery-with-dependencies_2.12-0.23.2.jar')
-             .getOrCreate()
-             )
-    return spark
+    return (
+        SparkSession.builder.appName(
+            "Processamento de Dados de Gasolina no Brasil"
+        )
+        .config(
+            'spark.jars',
+            'gs://spark-lib/bigquery/spark-bigquery-with-dependencies_2.12-0.23.2.jar',
+        )
+        .getOrCreate()
+    )
 
 
 def rename_columns(dataframe):
@@ -103,12 +106,10 @@ def write_bigquery(dataframe, bq_dataset, bq_table, gcs_tmp_bucket):
     """
 
     # spark.conf.set('temporaryGcsBucket', gcs_tmp_bucket)
-    dataframe.write \
-        .format("bigquery") \
-        .option("table", "{}.{}".format(bq_dataset, bq_table)) \
-        .option("temporaryGcsBucket", gcs_tmp_bucket) \
-        .mode('append') \
-        .save()
+    dataframe.write.format("bigquery").option(
+        "table", f"{bq_dataset}.{bq_table}"
+    ).option("temporaryGcsBucket", gcs_tmp_bucket).mode('append').save()
+
 
     return None
 

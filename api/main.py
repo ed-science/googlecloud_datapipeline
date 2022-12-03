@@ -31,9 +31,7 @@ async def read_root():
 
 
 def get_dados(remote_url):
-    response = requests.get(remote_url)
-
-    return response
+    return requests.get(remote_url)
 
 
 @app.post("/download_combustivel")
